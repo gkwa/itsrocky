@@ -1,0 +1,7 @@
+* itsrocky
+
+This is a description of my itsrocky.
+
+** Usage
+
+To use my project, run this command: ./itsrocky --verbose
