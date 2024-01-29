@@ -1,6 +1,10 @@
 package daggerverse
 
-import "time"
+import (
+	"encoding/json"
+	"fmt"
+	"time"
+)
 
 type RepositoryInfo struct {
 	BrowseURL string    `json:"browse_url"`
@@ -14,12 +18,31 @@ type RepositoryInfo struct {
 	Version   string    `json:"version"`
 }
 
-type ItemsWrapper struct {
-	Items []RepositoryInfo `json:"items"`
-}
-
 type CustomizedRepositoryInfo struct {
 	RepositoryInfo
+}
+
+func (c CustomizedRepositoryInfo) String() (string, error) {
+	jsonBytes, err := json.MarshalIndent(c, "", "  ")
+	if err != nil {
+		return "", fmt.Errorf("error marshaling JSON: %v", err)
+	}
+	return string(jsonBytes), nil
+}
+
+type CustomizedRepositoryInfos []*CustomizedRepositoryInfo
+
+func (cr CustomizedRepositoryInfos) String() string {
+	// Use json.MarshalIndent for the entire slice
+	jsonBytes, err := json.MarshalIndent(cr, "", "  ")
+	if err != nil {
+		return fmt.Sprintf("Error marshaling JSON: %v\n", err)
+	}
+	return string(jsonBytes)
+}
+
+func (cr CustomizedRepositoryInfos) AddRepo(repo *CustomizedRepositoryInfo) CustomizedRepositoryInfos {
+	return append(cr, repo)
 }
 
 type CustomizedRepositoryInfoBuilder struct {
