@@ -22,7 +22,10 @@ type CustomizedRepositoryInfo struct {
 	AuthorRepoURL string `json:"author_url"`
 }
 
-type CustomizedRepositoryInfos []*CustomizedRepositoryInfo
+type (
+	CustomizedRepositoryInfos    []*CustomizedRepositoryInfo
+	CustomizedRepositoryInfoList []CustomizedRepositoryInfo
+)
 
 func (cr CustomizedRepositoryInfos) AddRepo(repo *CustomizedRepositoryInfo) CustomizedRepositoryInfos {
 	return append(cr, repo)
