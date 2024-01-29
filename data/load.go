@@ -29,12 +29,17 @@ func LoadFromFile() error {
 
 	var customizedRepos daggerverse.CustomizedRepositoryInfos
 	for _, repo := range repos {
-		customizedRepo := daggerverse.CustomizedRepositoryInfo{RepositoryInfo: repo}
-		cr := daggerverse.NewCustomizedRepositoryInfoBuilder().
-			Author(customizedRepo.Path).
-			Build()
-		customizedRepos = append(customizedRepos, cr)
+		cr := daggerverse.CustomizedRepositoryInfo{RepositoryInfo: repo}
+		cr.Author, err = daggerverse.GetAuthor(cr.Path)
+		if err != nil {
+			return fmt.Errorf("error getting author: %v", err)
+		}
+		cr.AuthorRepoURL, err = daggerverse.GetAuthorRepoURL(cr.Path)
+		if err != nil {
+			return fmt.Errorf("error getting author repo URL: %v", err)
+		}
 
+		customizedRepos = append(customizedRepos, &cr)
 	}
 
 	fmt.Println(customizedRepos)

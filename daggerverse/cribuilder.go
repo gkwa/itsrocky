@@ -12,11 +12,11 @@ func (b *CustomizedRepositoryInfoBuilder) BrowseURL(browseURL string) *Customize
 }
 
 func (b *CustomizedRepositoryInfoBuilder) Author(author string) *CustomizedRepositoryInfoBuilder {
-	a, err := getAuthor(author)
+	a, err := GetAuthor(author)
 	if err != nil {
 		panic(err)
 	}
-	b.info.MyAuthor = a
+	b.info.Author = a
 	return b
 }
 
