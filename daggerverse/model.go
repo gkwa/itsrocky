@@ -3,6 +3,8 @@ package daggerverse
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
+	"strings"
 	"time"
 )
 
@@ -20,6 +22,7 @@ type RepositoryInfo struct {
 
 type CustomizedRepositoryInfo struct {
 	RepositoryInfo
+	MyAuthor string
 }
 
 func (c CustomizedRepositoryInfo) String() (string, error) {
@@ -63,6 +66,36 @@ func (b *CustomizedRepositoryInfoBuilder) Build() *CustomizedRepositoryInfo {
 
 func (b *CustomizedRepositoryInfoBuilder) BrowseURL(browseURL string) *CustomizedRepositoryInfoBuilder {
 	b.info.BrowseURL = browseURL
+	return b
+}
+
+func getAuthor(path string) (string, error) {
+	if path == "" {
+		return "", nil
+	}
+
+	x := strings.TrimPrefix(path, "https://")
+
+	fullURL := "https://" + x
+
+	u, err := url.Parse(fullURL)
+	if err != nil {
+		return "", fmt.Errorf("error parsing URL: %v", err)
+	}
+
+	p := strings.TrimPrefix(u.Path, "/")
+	z := strings.Index(p, "/")
+	author := p[:z]
+
+	return author, nil
+}
+
+func (b *CustomizedRepositoryInfoBuilder) Author(author string) *CustomizedRepositoryInfoBuilder {
+	a, err := getAuthor(author)
+	if err != nil {
+		panic(err)
+	}
+	b.info.MyAuthor = a
 	return b
 }
 

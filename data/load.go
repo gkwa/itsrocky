@@ -30,7 +30,11 @@ func LoadFromFile() error {
 	var customizedRepos daggerverse.CustomizedRepositoryInfos
 	for _, repo := range repos {
 		customizedRepo := daggerverse.CustomizedRepositoryInfo{RepositoryInfo: repo}
-		customizedRepos = append(customizedRepos, &customizedRepo)
+		cr := daggerverse.NewCustomizedRepositoryInfoBuilder().
+			Author(customizedRepo.Path).
+			Build()
+		customizedRepos = append(customizedRepos, cr)
+
 	}
 
 	fmt.Println(customizedRepos)
