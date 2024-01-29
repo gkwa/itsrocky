@@ -1,4 +1,4 @@
-package fetch
+package data
 
 import (
 	"context"
@@ -11,21 +11,24 @@ import (
 )
 
 func RunFetch() error {
-	endpointURL := "https://daggerverse.dev/api/refs"
-
 	timeout := 10 * time.Second
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
+
+	if !isFileOlderThan(DataFilename, maxAgeDuration) {
+		fmt.Println("Data is not older than 5 hours. Skipping fetch.")
+		return nil
+	}
 
 	data, err := fetchDataWithContext(ctx, endpointURL)
 	if err != nil {
 		return fmt.Errorf("error fetching data: %v", err)
 	}
 
-	err = writeJsonTofile("daggervers.json", data)
+	err = writeJsonTofile(DataFilename, data)
 	if err != nil {
-		return fmt.Errorf("error writing to daggervers.json: %v", err)
+		return fmt.Errorf("error writing to %s: %v", DataFilename, err)
 	}
 
 	fmt.Println("Data fetched and written to daggervers.json successfully.")
@@ -78,4 +81,15 @@ func writeJsonTofile(filename string, data []byte) error {
 	}
 
 	return nil
+}
+
+func isFileOlderThan(filename string, maxAge time.Duration) bool {
+	fileInfo, err := os.Stat(filename)
+	if err != nil {
+		return true
+	}
+
+	age := time.Since(fileInfo.ModTime())
+
+	return age > maxAge
 }
