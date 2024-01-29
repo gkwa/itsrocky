@@ -18,8 +18,8 @@ type RepositoryInfo struct {
 
 type CustomizedRepositoryInfo struct {
 	RepositoryInfo
-	Author        string
-	AuthorRepoURL string
+	Author        string `json:"author"`
+	AuthorRepoURL string `json:"author_url"`
 }
 
 type CustomizedRepositoryInfos []*CustomizedRepositoryInfo
