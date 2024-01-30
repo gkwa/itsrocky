@@ -7,7 +7,10 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 func RunFetch() error {
@@ -16,11 +19,16 @@ func RunFetch() error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	status, age := isFileOlderThan(DataFilename, maxAgeDuration)
+	stale, age := isFileOlderThan(DataFilename, maxAgeDuration)
 
-	if !status {
-		fmt.Fprintf(os.Stderr, "data age %s<5h. Skipping fetch.\n", age.Truncate(time.Second))
+	if !stale && !viper.GetBool("no-cache") {
+		fmt.Fprintf(os.Stderr, "data age %s<5h, skipping re-fetch\n", age.Truncate(time.Second))
 		return nil
+	}
+
+	err := os.MkdirAll(filepath.Dir(DataFilename), 0o755)
+	if err != nil {
+		return fmt.Errorf("error creating directory %s: %v", filepath.Dir(DataFilename), err)
 	}
 
 	data, err := fetchDataWithContext(ctx, endpointURL)

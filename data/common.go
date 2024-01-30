@@ -1,9 +1,15 @@
 package data
 
-import "time"
+import (
+	"path/filepath"
+	"time"
+
+	"github.com/adrg/xdg"
+)
+
+var DataFilename = filepath.Join(xdg.DataHome, "itsrock", "daggervers.json")
 
 const (
 	endpointURL    = "https://daggerverse.dev/api/refs"
-	DataFilename   = "daggervers.json"
 	maxAgeDuration = 5 * time.Hour
 )

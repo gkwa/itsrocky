@@ -5,8 +5,11 @@ package cmd
 
 import (
 	"fmt"
+	"log/slog"
+	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/taylormonacelli/itsrocky/data"
 )
 
@@ -40,4 +43,10 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// fetchCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	fetchCmd.Flags().BoolP("no-cache", "n", false, "Do not use cached data")
+	err := viper.BindPFlag("no-cache", fetchCmd.Flags().Lookup("no-cache"))
+	if err != nil {
+		slog.Error("error binding no-cache flag", "error", err)
+		os.Exit(1)
+	}
 }
