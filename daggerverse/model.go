@@ -20,11 +20,13 @@ type CustomizedRepositoryInfo struct {
 	RepositoryInfo
 	Author        string `json:"author"`
 	AuthorRepoURL string `json:"author_url"`
+	Age           time.Duration
+	ProjectDir    string
 }
 
 type (
-	CustomizedRepositoryInfos    []*CustomizedRepositoryInfo
-	CustomizedRepositoryInfoList []CustomizedRepositoryInfo
+	CustomizedRepositoryInfos     []*CustomizedRepositoryInfo
+	CustomizedRepositoryInfoSlice []CustomizedRepositoryInfo
 )
 
 func (cr CustomizedRepositoryInfos) AddRepo(repo *CustomizedRepositoryInfo) CustomizedRepositoryInfos {

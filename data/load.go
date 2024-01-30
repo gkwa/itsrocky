@@ -15,7 +15,7 @@ func Main() error {
 		return fmt.Errorf("error loading from file: %v", err)
 	}
 
-	repoList, err := buildCustomizedRepositoryInfoList(repos)
+	repoList, err := BuildCustomizedRepositoryInfoSlice(repos)
 	if err != nil {
 		return fmt.Errorf("error building customized repository info list: %v", err)
 	}
@@ -30,10 +30,10 @@ func Main() error {
 	return nil
 }
 
-func buildCustomizedRepositoryInfoList(repos []daggerverse.RepositoryInfo) (daggerverse.CustomizedRepositoryInfoList, error) {
+func BuildCustomizedRepositoryInfoSlice(repos []daggerverse.RepositoryInfo) (daggerverse.CustomizedRepositoryInfoSlice, error) {
 	var err error
 
-	var repoList daggerverse.CustomizedRepositoryInfoList
+	var reposSlice daggerverse.CustomizedRepositoryInfoSlice
 	for _, repo := range repos {
 		cr := daggerverse.CustomizedRepositoryInfo{RepositoryInfo: repo}
 
@@ -47,10 +47,14 @@ func buildCustomizedRepositoryInfoList(repos []daggerverse.RepositoryInfo) (dagg
 			return nil, fmt.Errorf("error getting author repo URL: %v", err)
 		}
 
-		repoList = append(repoList, cr)
+		cr.ProjectDir, err = daggerverse.GetProjectDir(cr.Path)
+		if err != nil {
+			return nil, fmt.Errorf("error getting project dir: %v", err)
+		}
+		reposSlice = append(reposSlice, cr)
 	}
 
-	return repoList, nil
+	return reposSlice, nil
 }
 
 func LoadFromFile() ([]daggerverse.RepositoryInfo, error) {

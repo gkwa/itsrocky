@@ -26,6 +26,22 @@ func convertToURL(path string) (*url.URL, error) {
 	return u, nil
 }
 
+func GetFinalPathSegment(u *url.URL) string {
+	segments := strings.Split(u.Path, "/")
+	return segments[len(segments)-1]
+}
+
+func GetProjectDir(path string) (string, error) {
+	u, err := convertToURL(path)
+	if err != nil {
+		return "", fmt.Errorf("error getting author: %v", err)
+	}
+
+	final := GetFinalPathSegment(u)
+
+	return final, nil
+}
+
 func GetAuthor(path string) (string, error) {
 	u, err := convertToURL(path)
 	if err != nil {
@@ -72,7 +88,7 @@ func (c CustomizedRepositoryInfo) String() (string, error) {
 	return string(jsonBytes), nil
 }
 
-func (l CustomizedRepositoryInfoList) String() string {
+func (l CustomizedRepositoryInfoSlice) String() string {
 	jsonBytes, err := json.MarshalIndent(l, "", "  ")
 	if err != nil {
 		return fmt.Sprintf("Error marshaling JSON: %v\n", err)
@@ -89,7 +105,7 @@ func (cr CustomizedRepositoryInfos) String() string {
 	return string(jsonBytes)
 }
 
-func MostRecentIndexed(records CustomizedRepositoryInfoList) (CustomizedRepositoryInfoList, error) {
+func MostRecentIndexed(records CustomizedRepositoryInfoSlice) (CustomizedRepositoryInfoSlice, error) {
 	uniqueRecords := make(map[string]CustomizedRepositoryInfo)
 
 	for _, record := range records {

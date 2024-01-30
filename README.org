@@ -1,5 +1,4 @@
 * itsrocky
-
 ** Usage
 
 #+begin_example
