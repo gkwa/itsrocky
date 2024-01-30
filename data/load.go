@@ -16,17 +16,12 @@ func Main() error {
 		return fmt.Errorf("error loading from file: %v", err)
 	}
 
-	repoList, err := BuildCustomizedRepositoryInfoSlice(repos)
+	reposSlice, err := BuildCustomizedRepositoryInfoSlice(repos)
 	if err != nil {
 		return fmt.Errorf("error building customized repository info list: %v", err)
 	}
 
-	uniqueRepos, err := daggerverse.MostRecentIndexed(repoList)
-	if err != nil {
-		return fmt.Errorf("error uniquifying: %v", err)
-	}
-
-	fmt.Println(uniqueRepos)
+	fmt.Println(reposSlice)
 
 	return nil
 }

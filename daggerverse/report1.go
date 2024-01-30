@@ -64,7 +64,7 @@ func (repos CustomizedRepositoryInfoSlice) GenerateHTMLReport() (string, error) 
 			<table class="table table-bordered">
 				<thead>
 					<tr>
-						<th>Org or author</th>
+						<th>Org/Author</th>
 						<th>Project</th>
 						<th>Git URL</th>
 					</tr>
