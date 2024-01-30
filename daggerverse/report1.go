@@ -1,6 +1,7 @@
 package daggerverse
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"strings"
@@ -11,6 +12,16 @@ import (
 
 func DateToAge(t time.Time) string {
 	return humanize.Time(t)
+}
+
+func (repos CustomizedRepositoryInfoSlice) ToJson() ([]byte, error) {
+	// pretty print repos
+	prettyPrintedData, err := json.MarshalIndent(repos, "", "  ")
+	if err != nil {
+		return []byte{}, fmt.Errorf("error marshaling data to pretty-printed JSON: %v", err)
+	}
+
+	return prettyPrintedData, nil
 }
 
 func (repos CustomizedRepositoryInfoSlice) GenerateHTMLReport() (string, error) {
@@ -42,27 +53,28 @@ func (repos CustomizedRepositoryInfoSlice) GenerateHTMLReport() (string, error) 
 			th {
 				background-color: #f2f2f2;
 			}
+
+			tr { 
+				line-height: 10px; 
+			}
 		</style>
 	</head>
 	<body>
 		<div class="container">
-			<h1 class="mt-4 mb-4">Repository Report</h1>
 			<table class="table table-bordered">
 				<thead>
 					<tr>
-						<th>Author</th>
-						<th>Recent Commit Age</th>
-						<th>Browser URL</th>
+						<th>Org or author</th>
+						<th>Project</th>
 						<th>Git URL</th>
 					</tr>
 				</thead>
 				<tbody>
 					{{range .Repos}}
 					<tr>
-						<td><a href="{{.AuthorRepoURL}}">{{.Author}}</a></td>
-						<td>{{DateToAge .CreatedAt }}</td>
-					<td><a target="_blank" href="{{.BrowseURL}}">{{.ProjectDir}}</a></td>
-						<td><a target="_blank" href="{{.GitURL}}">{{.GitURL}}</a></td>
+						<td><a href="{{.AuthorRepoURL}}" target="_blank">{{.Author}}</a></td>
+						<td><a href="{{.BrowseURL}}" target="_blank">{{.ProjectDir}}</a>{{if ne .Release ""}}({{.Release}}){{end}} {{DateToAge .CreatedAt }}</td>
+						<td><a href="{{.GitURL}}" target="_blank">{{.GitURL}}</a></td>
 					</tr>
 					{{end}}
 				</tbody>

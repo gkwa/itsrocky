@@ -16,8 +16,10 @@ func RunFetch() error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	if !isFileOlderThan(DataFilename, maxAgeDuration) {
-		fmt.Println("Data is not older than 5 hours. Skipping fetch.")
+	status, age := isFileOlderThan(DataFilename, maxAgeDuration)
+
+	if !status {
+		fmt.Fprintf(os.Stderr, "data age %s<5h. Skipping fetch.\n", age.Truncate(time.Second))
 		return nil
 	}
 
@@ -31,7 +33,7 @@ func RunFetch() error {
 		return fmt.Errorf("error writing to %s: %v", DataFilename, err)
 	}
 
-	fmt.Println("Data fetched and written to daggervers.json successfully.")
+	fmt.Fprintf(os.Stderr, "Data fetched and written to %s successfully.\n", DataFilename)
 
 	return nil
 }
@@ -83,13 +85,13 @@ func writeJsonTofile(filename string, data []byte) error {
 	return nil
 }
 
-func isFileOlderThan(filename string, maxAge time.Duration) bool {
+func isFileOlderThan(filename string, maxAge time.Duration) (bool, time.Duration) {
 	fileInfo, err := os.Stat(filename)
 	if err != nil {
-		return true
+		return true, 0
 	}
 
 	age := time.Since(fileInfo.ModTime())
 
-	return age > maxAge
+	return age > maxAge, age
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 
 	"github.com/taylormonacelli/itsrocky/daggerverse"
 )
@@ -54,7 +55,16 @@ func BuildCustomizedRepositoryInfoSlice(repos []daggerverse.RepositoryInfo) (dag
 		reposSlice = append(reposSlice, cr)
 	}
 
-	return reposSlice, nil
+	uniqueRepos, err := daggerverse.MostRecentIndexed(reposSlice)
+	if err != nil {
+		return nil, fmt.Errorf("error uniquifying: %v", err)
+	}
+
+	sort.Slice(uniqueRepos, func(i, j int) bool {
+		return uniqueRepos[i].CreatedAt.After(uniqueRepos[j].CreatedAt)
+	})
+
+	return uniqueRepos, nil
 }
 
 func LoadFromFile() ([]daggerverse.RepositoryInfo, error) {
