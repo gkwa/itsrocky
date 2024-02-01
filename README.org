@@ -4,5 +4,16 @@
 #+begin_example
 make
 ./itsrocky fetch
-./itsrocky load
+./itsrocky report
+./itsrocky report4
+#+end_example
+
+*** fetch updated modules
+
+#+begin_example
+mkdir -p my_daggerverse_collection
+cd my_daggerverse_collection
+git init
+itsrocky report4 >/tmp/sub
+bash -x /tmp/sub
 #+end_example

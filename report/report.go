@@ -41,23 +41,6 @@ func RunReport3(repos daggerverse.CustomizedRepositoryInfoSlice) error {
 	return nil
 }
 
-// Repository Information:
-// - Browse URL: {{.BrowseURL}}
-// - Created At: {{.CreatedAt}}
-// - Git Commit: {{.GitCommit}}
-// - Git URL: {{.GitURL}}
-// - Indexed At: {{.IndexedAt}}
-// - Path: {{.Path}}
-// - Release: {{.Release}}
-// - Subpath: {{.Subpath}}
-// - Version: {{.Version}}
-
-// Custom Information:
-// - Author: {{.Author}}
-// - Author Repo URL: {{.AuthorRepoURL}}
-// - Age: {{.Age}}
-// - Project Directory: {{.ProjectDir}}
-
 func RunReport4(repos daggerverse.CustomizedRepositoryInfoSlice) error {
 	const repoInfoTemplate = `
 #!/usr/bin/env bash
@@ -72,6 +55,9 @@ if [ ! -d $BASE_DIR/{{.Path}} ]; then
     git submodule add --quiet {{.GitURL}} {{.Path}}
     git commit -am "Add submodule {{.Path}}"
 fi
+
+cd $BASE_DIR/{{.Path}}
+git fetch --quiet
 
 cd $BASE_DIR/{{.Path}}
 if ! git checkout --quiet {{.GitCommit}}; then
