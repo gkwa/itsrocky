@@ -17,3 +17,55 @@ git init
 itsrocky report4 >/tmp/sub
 bash -x /tmp/sub
 #+end_example
+
+*** report5
+**** purpose: learn why intellisense for resolving dag.Container sometimes works and sometimes doesn't work
+**** summary 
+
++ https://discord.com/channels/707636530424053791/1120503349599543376/threads/1198297063574753330
++ https://docs.dagger.io/zenith/developer/python/419481/quickstart/#step-2-prepare-the-development-environment
+
+vscode intellisense for dagger wasn't recongized
+
+**** iterate with this
+***** create /tmp/b1 script
+
+#+begin_example
+z itsrocky && make install
+cd /tmp; itsrocky report5 >/tmp/b1 && bash -x /tmp/b1
+#+end_example
+
+***** output script
+
+#+begin_example
+#!/usr/bin/env bash
+set -e
+
+BASE_DIR=$(pwd)
+scratch=$BASE_DIR/scratch
+
+rm -rf $scratch
+mkdir -p $scratch
+
+git clone --quiet --depth 1 https://github.com/sagikazarmark/daggerverse $scratch/github.com/sagikazarmark/daggerverse/bats
+cd $scratch/github.com/sagikazarmark/daggerverse/bats
+dir=$(
+	rg --files-with-matches --glob='dagger.json' '"sdk": "go"' $scratch/github.com/sagikazarmark/daggerverse/bats |
+	xargs dirname |
+	xargs -d '\n' -a - rg -l dag.Container |
+	grep -i main.go |
+	xargs dirname |
+	sort -R |
+	head -1
+)
+
+if [ -z "$dir" ]; then
+	echo "No go sdk found in github.com/sagikazarmark/daggerverse/bats"
+	exit 1
+fi
+
+cd $dir
+docker ps --format {{.Names}} --filter name='^/dagger-engine-*' | xargs --no-run-if-empty -I"{}" docker rm --force {}
+code $dir
+echo "cd $dir && dagger mod install github.com/sagikazarmark/daggerverse/bats@d0876cfe5c30f5896294d5c756c55fedc6ec21b8"
+#+end_example
