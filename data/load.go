@@ -47,6 +47,8 @@ func BuildCustomizedRepositoryInfoSlice(repos []daggerverse.RepositoryInfo) (dag
 		if err != nil {
 			return nil, fmt.Errorf("error getting project dir: %v", err)
 		}
+
+		cr.ModInstallPath = daggerverse.GetModInstallCmd(cr)
 		reposSlice = append(reposSlice, cr)
 	}
 

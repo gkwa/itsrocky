@@ -18,10 +18,11 @@ type RepositoryInfo struct {
 
 type CustomizedRepositoryInfo struct {
 	RepositoryInfo
-	Author        string        `json:"author"`
-	AuthorRepoURL string        `json:"author_url"`
-	Age           time.Duration `json:"age"`
-	ProjectDir    string        `json:"project_dir"`
+	Author         string        `json:"author"`
+	AuthorRepoURL  string        `json:"author_url"`
+	Age            time.Duration `json:"age"`
+	ProjectDir     string        `json:"project_dir"`
+	ModInstallPath string        `json:"mod_install_path"`
 }
 
 type (

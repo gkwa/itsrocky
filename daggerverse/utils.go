@@ -31,6 +31,10 @@ func GetFinalPathSegment(u *url.URL) string {
 	return segments[len(segments)-1]
 }
 
+func GetModInstallCmd(c CustomizedRepositoryInfo) string {
+	return c.Path + "@" + c.GitCommit
+}
+
 func GetProjectDir(path string) (string, error) {
 	u, err := convertToURL(path)
 	if err != nil {
