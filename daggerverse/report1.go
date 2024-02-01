@@ -14,6 +14,10 @@ func DateToAge(t time.Time) string {
 	return humanize.Time(t)
 }
 
+func JavascriptFriendlyTimestamp(t time.Time) string {
+	return humanize.Time(t)
+}
+
 func (repos CustomizedRepositoryInfoSlice) ToJson() ([]byte, error) {
 	// pretty print repos
 	prettyPrintedData, err := json.MarshalIndent(repos, "", "  ")
@@ -88,7 +92,8 @@ func (repos CustomizedRepositoryInfoSlice) GenerateHTMLReport() (string, error) 
 	`
 
 	tmpl, err := template.New("report").Funcs(template.FuncMap{
-		"DateToAge": DateToAge,
+		"DateToAge":                   DateToAge,
+		"JavascriptFriendlyTimestamp": JavascriptFriendlyTimestamp,
 	}).Parse(htmlTemplate)
 	if err != nil {
 		return "", fmt.Errorf("error parsing template: %v", err)
@@ -96,6 +101,16 @@ func (repos CustomizedRepositoryInfoSlice) GenerateHTMLReport() (string, error) 
 
 	currentTime := time.Now()
 	outputBuffer := &strings.Builder{}
+
+	// Parse RFC3339 timestamp
+	parsedTime, err := time.Parse(time.RFC3339, currentTime.Format(time.RFC3339))
+	if err != nil {
+		return "", fmt.Errorf("error parsing RFC3339 timestamp: %v", err)
+	}
+
+	formattedTime := parsedTime.Format(currentTime.Format(time.RFC3339))
+
+	_ = formattedTime
 
 	err = tmpl.Execute(outputBuffer, struct {
 		Repos       CustomizedRepositoryInfoSlice

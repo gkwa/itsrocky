@@ -19,10 +19,10 @@ func RunFetch() error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	stale, age := isFileOlderThan(DataFilename, maxAgeDuration)
+	stale, age := isFileOlderThan(DataFilename, MaxAge)
 
 	if !stale && !viper.GetBool("no-cache") {
-		fmt.Fprintf(os.Stderr, "data age %s<5h, skipping re-fetch\n", age.Truncate(time.Second))
+		fmt.Fprintf(os.Stderr, "data age %s<%s, %s till refech\n", age.Truncate(time.Second), MaxAge, (MaxAge - age).Truncate(time.Second))
 		return nil
 	}
 
@@ -41,7 +41,7 @@ func RunFetch() error {
 		return fmt.Errorf("error writing to %s: %v", DataFilename, err)
 	}
 
-	fmt.Fprintf(os.Stderr, "Data fetched and written to %s successfully.\n", DataFilename)
+	fmt.Fprintf(os.Stderr, "data fetched and written to %s\n", DataFilename)
 
 	return nil
 }
