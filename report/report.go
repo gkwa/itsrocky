@@ -133,7 +133,7 @@ fi
 cd $dir
 docker ps --format {{"{{"}}.Names{{"}}"}} --filter name='^/dagger-engine-*' | xargs --no-run-if-empty -I"{}" docker rm --force {}
 code $dir
-echo "cd $dir && dagger mod install {{ .ModInstallPath }}"
+echo "cd $dir && dagger mod install"
 `
 
 	tmpl, err := template.New("repositoryInfo").Parse(repoInfoTemplate)
