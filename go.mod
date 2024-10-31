@@ -3,7 +3,7 @@ module github.com/taylormonacelli/itsrocky
 go 1.21.4
 
 require (
-	github.com/adrg/xdg v0.5.2
+	github.com/adrg/xdg v0.5.3
 	github.com/dustin/go-humanize v1.0.1
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
